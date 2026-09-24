@@ -1,0 +1,13 @@
+(version 1)
+(rule "Minimum clearance 1"
+	(constraint clearance (min 0.2mm))
+)
+(rule "Minimum connection width 1"
+	(constraint connection_width (min 0.25mm))
+)
+(rule "Minimum drill size 1"
+	(constraint hole_size (min 0.3mm))
+)
+(rule "Copper to edge clearance 1"
+	(constraint edge_clearance (min 0.5mm))
+)
