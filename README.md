@@ -34,7 +34,7 @@ Full design rationale: [`docs/design-decisions.md`](docs/design-decisions.md)
 
 1. **Works next Christmas.** Every choice favours longevity: deep sleep, over-discharge protection, a battery that survives 11 months in a box.
 2. **Calm light.** Gamma-corrected, high-resolution, flicker-free PWM. Nothing jumpy, nothing "disco".
-3. **Safe to hang where children and pets are.** LiPo safety and robustness are requirements, not extras.
+3. **Safe to hang where children and pets are.** LiPo safety and robustness are requirements.
 4. **Buildable by one or two people** in batches of about 150.
 
 ## Roadmap
@@ -55,7 +55,7 @@ Open tasks are tracked in [Issues](../../issues).
 
 Gran Ornament is **source-available for non-commercial use**. You're welcome to build one for yourself, as a gift, or with a school or makerspace, and to share improvements.
 
-**Selling it requires permission.** That covers selling assembled ornaments, kits, or boards made from these files. Get in touch at *your@email.dk* and we'll work something out.
+**Selling it requires permission.** That covers selling assembled ornaments, kits, or boards made from these files. Get in touch at *henrik@smitt.dk* and we'll work something out.
 
 | What | Licence |
 |---|---|
