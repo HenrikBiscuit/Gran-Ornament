@@ -1,0 +1,17 @@
+# Normalise line endings so Windows and macOS/Linux diffs stay clean
+* text=auto
+
+# KiCad files are text: let Git diff them
+*.kicad_sch text
+*.kicad_pcb text
+*.kicad_pro text
+*.kicad_sym text
+*.kicad_mod text
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.zip binary
+*.step binary

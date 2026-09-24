@@ -1,0 +1,53 @@
+# ---------- KiCad ----------
+*-backups/
+*.bak
+*.bck
+*.kicad_prl
+*.lck
+~*.lck
+_autosave-*
+\#auto_saved_files#
+fp-info-cache
+*-cache.lib
+*.kicad_sch-bak
+*.kicad_pcb-bak
+# Plot outputs go into hardware/fabrication/<rev>/ deliberately, not the project folder
+hardware/kicad/*.gbr
+hardware/kicad/*.drl
+hardware/kicad/*.gbrjob
+
+# ---------- STM32CubeIDE / Eclipse ----------
+Debug/
+Release/
+.metadata/
+.settings/*
+!.settings/language.settings.xml
+*.launch.bak
+RemoteSystemsTempFiles/
+
+# ---------- Build output ----------
+build/
+*.o
+*.d
+*.su
+*.map
+*.list
+*.elf
+*.bin
+*.hex
+# Release binaries are attached to GitHub Releases instead of committed
+
+# ---------- Editors / OS ----------
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+
+# ---------- Private, never public ----------
+private/
+*.env
+supplier-quotes/
+customers/
