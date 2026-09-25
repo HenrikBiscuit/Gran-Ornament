@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "gpio.h"
+#include "app.hpp"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -87,7 +88,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-
+  app_run();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -97,6 +98,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    // HAL_GPIO_TogglePin(LED_Test_GPIO_Port, LED_Test_Pin);
+    // HAL_Delay(500);
   }
   /* USER CODE END 3 */
 }

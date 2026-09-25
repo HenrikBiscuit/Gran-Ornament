@@ -1,0 +1,17 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Flash Release",
+            "type": "shell",
+            "command": "STM32_Programmer_CLI",
+            "args": [
+                "-c", "port=SWD",
+                "-w", "${workspaceFolder}/build/Release/Gran_Ornament.elf",
+                "-v",
+                "-rst"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}
