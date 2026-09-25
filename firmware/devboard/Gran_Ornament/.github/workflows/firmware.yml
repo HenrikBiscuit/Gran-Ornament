@@ -1,0 +1,34 @@
+name: Firmware
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: lukka/get-cmake@latest
+
+      - uses: carlosperate/arm-none-eabi-gcc-action@v1
+        with:
+          release: '13.3.Rel1'
+
+      - name: Build firmware
+        working-directory: firmware/devboard/Gran_Ornament
+        run: |
+          cmake --preset Release
+          cmake --build --preset Release
+
+      - name: Run tests
+        run: |
+          cmake -S firmware/tests -B build-tests
+          cmake --build build-tests --config Release
+          ctest --test-dir build-tests -C Release --output-on-failure
