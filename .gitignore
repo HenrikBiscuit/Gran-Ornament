@@ -15,6 +15,7 @@ fp-info-cache
 hardware/kicad/*.gbr
 hardware/kicad/*.drl
 hardware/kicad/*.gbrjob
+.history/
 
 # ---------- STM32CubeIDE / Eclipse ----------
 Debug/
