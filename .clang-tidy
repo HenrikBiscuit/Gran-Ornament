@@ -1,0 +1,27 @@
+# Static-analysis lint config, consumed by clang-tidy (see the "lint" CI job).
+#
+# Scope is kept intentionally conservative so it stays green while still
+# catching real defects:
+#   - clang-diagnostic-* : genuine compiler warnings/errors
+#   - bugprone-*         : code likely to misbehave (UB, sign issues, etc.)
+#
+# Intentionally NOT enabled (to avoid noise on embedded/CubeMX code and
+# idioms we rely on):
+#   - readability-*      : style is left to .clang-format / review
+#   - cert-*             : rule-set compliance, revisit later
+#   - modernize-*        : would fight the C / HAL interop style
+#   - bugprone-easily-swappable-parameters: adjacent same-type params are common
+#   - misc-include-cleaner: include graph differs between HAL target and PC tests
+#
+# Only the main files passed on the command line are analyzed (default
+# HeaderFilterRegex is empty), so the HAL / CubeMX headers they #include are
+# parsed for context but never flagged.
+
+Checks: >
+  -*,
+  clang-diagnostic-*,
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-exception-escape
+
+WarningsAsErrors: '*'

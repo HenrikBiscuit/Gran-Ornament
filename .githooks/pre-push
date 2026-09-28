@@ -1,0 +1,55 @@
+#!/bin/sh
+# Gran-Ornament git pre-push hook
+# Runs the local build+test gate (pre-push.ps1) before every `git push` and
+# blocks the push if the firmware doesn't build or any test fails.
+#
+# Bypass once (not recommended):   git push --no-verify
+# Remove entirely:                 git config --unset core.hooksPath
+
+# The pre-push hook feeds its metadata on stdin; consume it.
+cat >/dev/null 2>&1 || true
+
+# Repo root (resolves correctly regardless of the CWD git invoked the hook from).
+root=$(git rev-parse --show-toplevel 2>/dev/null) || {
+  echo 'pre-push: could not resolve repo root; aborting push.' >&2
+  exit 1
+}
+
+# Translate POSIX root to a Windows path for native powershell.exe
+# (cygpath ships with Git for Windows; fall through unchanged elsewhere).
+if command -v cygpath >/dev/null 2>&1; then
+  wroot=$(cygpath -w "$root")
+else
+  wroot="$root"
+fi
+script="$wroot/pre-push.ps1"
+
+if [ ! -f "$script" ]; then
+  echo "pre-push: missing gate script: $script" >&2
+  exit 1
+fi
+
+# Prefer PowerShell 7, fall back to Windows PowerShell 5.1.
+if command -v pwsh >/dev/null 2>&1; then
+  PS_BIN=pwsh
+elif command -v powershell >/dev/null 2>&1; then
+  PS_BIN=powershell
+else
+  echo 'pre-push: PowerShell (pwsh or powershell) not found on PATH.' >&2
+  echo '          Run pre-push.ps1 manually, then: git push --no-verify' >&2
+  exit 1
+fi
+
+echo 'Gran-Ornament pre-push: running local build+test gate ...'
+"$PS_BIN" -NoProfile -ExecutionPolicy Bypass -File "$script"
+rc=$?
+
+if [ "$rc" -ne 0 ]; then
+  echo '' >&2
+  echo "Gran-Ornament pre-push: LOCAL GATE FAILED (exit $rc) - push blocked." >&2
+  echo '  Fix the build/tests, then push again. To override once: git push --no-verify' >&2
+  exit "$rc"
+fi
+
+echo 'Gran-Ornament pre-push: local gate PASSED.'
+exit 0

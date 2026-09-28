@@ -28,6 +28,7 @@ RemoteSystemsTempFiles/
 
 # ---------- Build output ----------
 build/
+build-tests/
 *.o
 *.d
 *.su

@@ -1,6 +1,9 @@
 # Normalise line endings so Windows and macOS/Linux diffs stay clean
 * text=auto
 
+# Git hooks must keep LF endings (CRLF breaks the shebang in Git Bash)
+.githooks/** text eol=lf
+
 # KiCad files are text: let Git diff them
 *.kicad_sch text
 *.kicad_pcb text
