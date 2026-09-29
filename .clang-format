@@ -1,6 +1,7 @@
-# Formatting rules. Used by editors (clangd / clangd-formatter) and available
-# for a `clang-format --dry-run --Werror` CI check if one is wanted later.
-# Not enforced in CI today — see `.github/workflows/firmware.yml`.
+# Formatting rules. Used by editors (clangd format-on-save) and enforced by
+# tools/lint.ps1 (pre-push gate + "lint" CI job) on our own code only:
+# firmware/devboard/*/App/** and firmware/tests/*.cpp. CubeMX-generated Core/
+# and vendor Drivers/ are never formatted.
 BasedOnStyle: LLVM
 IndentWidth: 4
 TabWidth: 4

@@ -14,6 +14,7 @@ Made by hand in small batches in Denmark. This repository is the open build log:
 |---|---|
 | [`hardware/`](hardware/) | KiCad project, datasheet links, fabrication outputs (Gerbers, BOM, CPL) |
 | [`firmware/`](firmware/) | STM32G030 firmware: dev-board experiments and the ornament firmware |
+| [`firmware/tests/`](firmware/tests/) | Host-side GoogleTest tests for the firmware logic, run in CI and by the pre-push gate |
 | [`docs/`](docs/) | Design decisions, power budget, pinout, bring-up notes, images |
 | [`production/`](production/) | Programming and test process for each batch (later) |
 | [`CHANGELOG.md`](CHANGELOG.md) | What changed, per hardware and firmware version |
