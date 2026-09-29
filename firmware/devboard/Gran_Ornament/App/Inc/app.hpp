@@ -1,8 +1,7 @@
 #pragma once
 
 #ifdef __cplusplus
-extern "C" 
-{
+extern "C" {
 #endif
 
 /* Entry point for the application. Called once from main.c after
