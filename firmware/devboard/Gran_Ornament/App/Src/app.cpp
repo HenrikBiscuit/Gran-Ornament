@@ -16,12 +16,12 @@ struct PwmChannel {
 
 // Front rows, back rows (bottom to top), then the star shared by both sides.
 constexpr std::array<PwmChannel, 7> channels{{
-    {&htim1,  TIM_CHANNEL_4, false}, // F1 PA11
-    {&htim1,  TIM_CHANNEL_3, false}, // F2 PB6
-    {&htim1,  TIM_CHANNEL_2, true},  // F3 PB0
+    {&htim1, TIM_CHANNEL_4, false},  // F1 PA11
+    {&htim1, TIM_CHANNEL_3, false},  // F2 PB6
+    {&htim1, TIM_CHANNEL_2, true},   // F3 PB0
     {&htim16, TIM_CHANNEL_1, false}, // B1 PB8
-    {&htim3,  TIM_CHANNEL_1, false}, // B2 PA6
-    {&htim3,  TIM_CHANNEL_2, false}, // B3 PA7
+    {&htim3, TIM_CHANNEL_1, false},  // B2 PA6
+    {&htim3, TIM_CHANNEL_2, false},  // B3 PA7
     {&htim14, TIM_CHANNEL_1, false}, // star PA4
 }};
 
@@ -42,9 +42,8 @@ void start_pwm()
 {
     for (const auto& ch : channels) {
         __HAL_TIM_SET_COMPARE(ch.tim, ch.channel, 0U);
-        const HAL_StatusTypeDef status = ch.complementary
-            ? HAL_TIMEx_PWMN_Start(ch.tim, ch.channel)
-            : HAL_TIM_PWM_Start(ch.tim, ch.channel);
+        const HAL_StatusTypeDef status = ch.complementary ? HAL_TIMEx_PWMN_Start(ch.tim, ch.channel)
+                                                          : HAL_TIM_PWM_Start(ch.tim, ch.channel);
         if (status != HAL_OK) {
             Error_Handler();
         }
