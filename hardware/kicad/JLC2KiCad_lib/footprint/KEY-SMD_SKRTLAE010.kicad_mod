@@ -47,7 +47,7 @@
   (fp_text user ${REFERENCE} (at 0.000013 0.264999) (layer F.Fab)
     (effects (font (size 1 1) (thickness 0.15)))
   )
-  (model packages3d/KEY-SMD_SKRTLAE010.step
+  (model "${KIPRJMOD}/../JLC2KiCad_lib/footprint/packages3d/KEY-SMD_SKRTLAE010.step"
     (at (xyz 0 -0.007756 -0.019685))
     (scale (xyz 1 1 1))
     (rotate (xyz 0 0 0))

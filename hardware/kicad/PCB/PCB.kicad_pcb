@@ -2587,7 +2587,7 @@
 			(uuid "3b6054da-f212-47fc-b02b-0fe0028f2709")
 		)
 		(embedded_fonts no)
-		(model "packages3d/KEY-SMD_SKRTLAE010.step"
+		(model "${KIPRJMOD}/../JLC2KiCad_lib/footprint/packages3d/KEY-SMD_SKRTLAE010.step"
 			(offset
 				(xyz 0 -0.197002397 -0.4999989925)
 			)
@@ -5417,7 +5417,7 @@
 			(uuid "bcd17bc9-a431-484a-8956-7061a76fc11a")
 		)
 		(embedded_fonts no)
-		(model "packages3d/SOT-23-6_L2.9-W1.6-P0.95-LS2.8-BR.step"
+		(model "${KIPRJMOD}/../JLC2KiCad_lib/footprint/packages3d/SOT-23-6_L2.9-W1.6-P0.95-LS2.8-BR.step"
 			(offset
 				(xyz 0.0000253999996185 -0.0000761999988556 0)
 			)

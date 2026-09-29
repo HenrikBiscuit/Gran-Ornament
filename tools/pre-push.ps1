@@ -4,7 +4,7 @@
 # will pass; a red run stops a `git push` (via the pre-push hook).
 #
 # Run manually:
-#   powershell -NoProfile -ExecutionPolicy Bypass -File pre-push.ps1 [-Config Debug|Release]
+#   powershell -NoProfile -ExecutionPolicy Bypass -File tools/pre-push.ps1 [-Config Debug|Release]
 
 [CmdletBinding()]
 param(
@@ -14,8 +14,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-# Resolve the repo root from this script's location (works from any CWD).
-if ($PSCommandPath) { $root = Split-Path -Parent $PSCommandPath }
+# Resolve the repo root (parent of tools/) from this script's location (works from any CWD).
+if ($PSCommandPath) { $root = Split-Path -Parent (Split-Path -Parent $PSCommandPath) }
 else               { $root = (Get-Location).Path }
 Set-Location $root
 
