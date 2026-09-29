@@ -33,3 +33,29 @@ jobs:
           cmake -S firmware/tests -B build-tests
           cmake --build build-tests --config Release
           ctest --test-dir build-tests -C Release --output-on-failure
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: lukka/get-cmake@latest
+
+      - uses: carlosperate/arm-none-eabi-gcc-action@v1
+        with:
+          release: '13.3.Rel1'
+
+      # Pinned: formatting output can change between LLVM major releases, so keep
+      # clang-format on the same major as local (23). PyPI's newest clang-tidy is
+      # 22; its findings don't depend on the exact version the way formatting does.
+      - name: Install clang-format / clang-tidy
+        run: pip install clang-format==23.1.1 clang-tidy==22.1.8
+
+      # Configure only: lint needs compile_commands.json, not a full build.
+      - name: Configure firmware
+        working-directory: firmware/devboard/Gran_Ornament
+        run: cmake --preset Release
+
+      - name: Lint
+        shell: pwsh
+        run: ./tools/lint.ps1 -Config Release

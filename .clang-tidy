@@ -1,4 +1,5 @@
-# Static-analysis lint config, consumed by clang-tidy (see the "lint" CI job).
+# Static-analysis lint config, consumed by clang-tidy (see tools/lint.ps1,
+# which runs from the pre-push gate and the "lint" CI job).
 #
 # Scope is kept intentionally conservative so it stays green while still
 # catching real defects:
@@ -13,9 +14,9 @@
 #   - bugprone-easily-swappable-parameters: adjacent same-type params are common
 #   - misc-include-cleaner: include graph differs between HAL target and PC tests
 #
-# Only the main files passed on the command line are analyzed (default
-# HeaderFilterRegex is empty), so the HAL / CubeMX headers they #include are
-# parsed for context but never flagged.
+# Only our own App/ code is reported. Newer clang-tidy reports every non-system
+# header by default, so HeaderFilterRegex is required to keep the HAL / CMSIS /
+# CubeMX headers (parsed for context) from being flagged.
 
 Checks: >
   -*,
@@ -24,4 +25,5 @@ Checks: >
   -bugprone-easily-swappable-parameters,
   -bugprone-exception-escape
 
+HeaderFilterRegex: '.*[/\\]App[/\\].*'
 WarningsAsErrors: '*'
