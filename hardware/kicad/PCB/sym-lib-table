@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "JLC2KiCad")(type "KiCad")(uri "${KIPRJMOD}/../JLC2KiCad_lib/symbol/ornament_symbols.kicad_sym")(options "")(descr "Project-local JLCPCB parts"))
+)

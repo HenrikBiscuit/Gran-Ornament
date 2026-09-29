@@ -1,6 +1,6 @@
 #!/bin/sh
 # Gran-Ornament git pre-push hook
-# Runs the local build+test gate (pre-push.ps1) before every `git push` and
+# Runs the local build+test gate (tools/pre-push.ps1) before every `git push` and
 # blocks the push if the firmware doesn't build or any test fails.
 #
 # Bypass once (not recommended):   git push --no-verify
@@ -22,7 +22,7 @@ if command -v cygpath >/dev/null 2>&1; then
 else
   wroot="$root"
 fi
-script="$wroot/pre-push.ps1"
+script="$wroot/tools/pre-push.ps1"
 
 if [ ! -f "$script" ]; then
   echo "pre-push: missing gate script: $script" >&2
@@ -36,7 +36,7 @@ elif command -v powershell >/dev/null 2>&1; then
   PS_BIN=powershell
 else
   echo 'pre-push: PowerShell (pwsh or powershell) not found on PATH.' >&2
-  echo '          Run pre-push.ps1 manually, then: git push --no-verify' >&2
+  echo '          Run tools/pre-push.ps1 manually, then: git push --no-verify' >&2
   exit 1
 fi
 
