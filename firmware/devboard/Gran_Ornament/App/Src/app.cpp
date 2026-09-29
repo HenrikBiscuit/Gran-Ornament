@@ -1,6 +1,7 @@
 #include "app.hpp"
 
 #include "main.h"
+#include "pwm.hpp"
 #include "tim.h"
 
 #include <array>
@@ -28,7 +29,7 @@ constexpr std::array<PwmChannel, 7> channels{{
 void set_level(const PwmChannel& ch, std::uint32_t permille)
 {
     const std::uint32_t period = __HAL_TIM_GET_AUTORELOAD(ch.tim) + 1U;
-    __HAL_TIM_SET_COMPARE(ch.tim, ch.channel, period * permille / 1000U);
+    __HAL_TIM_SET_COMPARE(ch.tim, ch.channel, gran::duty_to_compare(period, permille));
 }
 
 void set_all(std::uint32_t permille)

@@ -26,3 +26,8 @@ add_executable(auto_off_test auto_off_test.cpp)
 target_include_directories(auto_off_test PRIVATE ${APP_INC})
 target_link_libraries(auto_off_test PRIVATE GTest::gtest_main)
 gtest_discover_tests(auto_off_test)
+
+add_executable(pwm_test pwm_test.cpp)
+target_include_directories(pwm_test PRIVATE ${APP_INC})
+target_link_libraries(pwm_test PRIVATE GTest::gtest_main)
+gtest_discover_tests(pwm_test)
