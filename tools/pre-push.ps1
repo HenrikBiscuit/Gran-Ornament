@@ -69,6 +69,11 @@ if ($LASTEXITCODE -ne 0) { Fail 'lint (clang-format / clang-tidy)' }
 # --- 4. Host tests: configure + build ----------------------------------------
 Write-Host ''
 Write-Host '[4/5] Host tests: configure + build' -ForegroundColor Yellow
+# Run from the git hook, Git's own mingw64\bin comes first on PATH, and its
+# DLLs make the MSYS2 g++ fail with no error text. Put the compiler's own
+# folder first so it (and the test executables) load the right DLLs.
+$gxx = Get-Command g++ -ErrorAction SilentlyContinue
+if ($gxx) { $env:PATH = (Split-Path -Parent $gxx.Source) + ';' + $env:PATH }
 cmake -S $ts -B $tb
 if ($LASTEXITCODE -ne 0) { Fail 'tests configure (cmake -S firmware/tests -B build-tests)' }
 cmake --build $tb --config $Config

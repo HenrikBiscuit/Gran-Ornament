@@ -11,10 +11,14 @@ Hardware and firmware are versioned separately.
 - PWM on all 7 LED channels (TIM1, TIM3, TIM14, TIM16), open drain, 12 bit at ~3.9 kHz.
 - SYSCLK lowered to 16 MHz.
 - Bench test in `app_run()`: fixed steps and a fade on every channel.
+- Button on PA0 (to GND, pull-up): short press = next mode, hold 1.5 s = off, press = wake (DD-009).
+- Off = Standby, woken by WKUP1 on PA0. The mode survives Standby in a backup register (DD-010).
+- Three placeholder modes (steady, breathe, dim) replace the bench test. 4 h auto-off is active.
+- Host tests for the button and the modes.
 ### Tooling
 - Lint with `clang-format` and `clang-tidy` (`tools/lint.ps1`). It runs in the pre-push gate and as a `lint` CI job, and covers `App/` and host test code only.
 ### Docs
 - Repository structure, design decision log, power budget template.
 - Pinout filled in.
-- Design decisions DD-003 to DD-008.
-- Bring-up log: LED current, pin leakage and PWM channel tests.
+- Design decisions DD-003 to DD-010.
+- Bring-up log: LED current, pin leakage and PWM channel tests, button wake and mode change.

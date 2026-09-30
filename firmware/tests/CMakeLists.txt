@@ -31,3 +31,13 @@ add_executable(pwm_test pwm_test.cpp)
 target_include_directories(pwm_test PRIVATE ${APP_INC})
 target_link_libraries(pwm_test PRIVATE GTest::gtest_main)
 gtest_discover_tests(pwm_test)
+
+add_executable(button_test button_test.cpp)
+target_include_directories(button_test PRIVATE ${APP_INC})
+target_link_libraries(button_test PRIVATE GTest::gtest_main)
+gtest_discover_tests(button_test)
+
+add_executable(modes_test modes_test.cpp)
+target_include_directories(modes_test PRIVATE ${APP_INC})
+target_link_libraries(modes_test PRIVATE GTest::gtest_main)
+gtest_discover_tests(modes_test)

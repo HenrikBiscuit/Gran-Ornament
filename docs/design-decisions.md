@@ -51,3 +51,17 @@
 ### DD-008 · LED series resistor
 **Date:** – 2026-09
 **Decision:** *TBD — 470 Ω or 680 Ω. 470 Ω is electrically safe; choose by look at the compensation floor (~60 % duty at full battery).*
+
+### DD-009 · Button: one press to wake, short to change mode, long to switch off
+**Date:** 2026-09-29
+**Decision:** The button on PA0 goes to GND, with the internal pull-up, so a press reads low. While on, the main loop polls it every ~1 ms (no EXTI). Debounce 20 ms. A short press moves to the next mode, and holding for 1.5 s switches off. The press that wakes the ornament is ignored until it is released.
+**Why:** Only one button, so it has to do everything. Polling is simple and easy to test on a PC (`Button` class, host tests). Wake-up from Standby doesn't need EXTI, it uses the WKUP1 pin (DD-010). The long press fires while the button is still held, so you see the LEDs go off without letting go.
+**Watch out:** The devboard uses a limit switch (NO to PA0, common to GND). Pressed, the pull-up draws ~80 µA; released, nothing.
+**Revisit if:** The loop gets too busy to poll every few ms, or the modes need a double press.
+
+### DD-010 · Off means Standby, mode kept in a backup register
+**Date:** 2026-09-29
+**Decision:** Switching off (long press or the 4 h auto-off) turns the LEDs off, waits for the button to be released, and enters Standby. PA0 is WKUP1 and wakes the MCU on a falling edge. The PWR pull-up keeps PA0 high in Standby. Waking is a reset, and the current mode is read back from TAMP backup register 0 (`0x4752'0000 | mode`, anything else means the default mode).
+**Why:** Standby is the lowest-current mode on the G030 (sub-µA, to be measured). Every other GPIO goes Hi-Z, so the open-drain LED pins are released and the LEDs stay off with no pull-down on the pads (DD-006). The backup register survives Standby and NRST, so the ornament comes back in the same mode.
+**Watch out:** The debugger drops when the MCU enters Standby: press the button (or connect under reset) to flash again. The mode is lost when the battery is disconnected. If the button is stuck pressed (e.g. squeezed in the box), the ornament wakes, stays on for 4 h, then waits forever for the release with the CPU running. Not handled yet.
+**Revisit if:** Measured Standby current is higher than the power budget allows, or the ornament must stay off after the battery is first connected.
