@@ -42,5 +42,5 @@ TEST(Modes, DecodeRejectsResetValueAndGarbage)
     EXPECT_EQ(gran::decode_mode(0u), Mode::Steady); // backup register after power-on
     EXPECT_EQ(gran::decode_mode(0xFFFF'FFFFu), Mode::Steady);
     EXPECT_EQ(gran::decode_mode(gran::kModeMagic | 0x7Fu), Mode::Steady); // out of range
-    EXPECT_EQ(gran::decode_mode(0x1234'0001u), Mode::Steady);              // wrong magic
+    EXPECT_EQ(gran::decode_mode(0x1234'0001u), Mode::Steady);             // wrong magic
 }

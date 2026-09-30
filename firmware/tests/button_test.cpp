@@ -79,7 +79,7 @@ TEST(Button, WakePressIsIgnoredUntilReleased)
 {
     Button b(true); // held at boot
     EXPECT_TRUE(b.pressed());
-    EXPECT_EQ(hold(b, true, 0, 5000), ButtonEvent::None); // no long
+    EXPECT_EQ(hold(b, true, 0, 5000), ButtonEvent::None);     // no long
     EXPECT_EQ(hold(b, false, 5001, 5100), ButtonEvent::None); // no short
     // The next press works normally.
     EXPECT_EQ(hold(b, true, 5101, 5200), ButtonEvent::None);
