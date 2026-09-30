@@ -41,4 +41,12 @@
 **What happened:** SYSCLK lowered to 16 MHz, all timers at period 4095 (12 bit, ~3.9 kHz), pins as alternate function open drain with polarity Low. A bench test steps through 0/25/50/100 % and then fades. PA11, PB6, PB0 (TIM1_CH2N), PB8, PA6, PA7 and PA4 all behave correctly, with no flash at reset. PB9/TIM17 could not be tested because the devboard's C14 header isn't connected to the chip (there is a 32.768 kHz crystal on PC14/PC15). PB9 is dropped, and the two star LEDs now share PA4.
 **Next:** Button on PA0 (limit switch wired, NO)
 
+
+# 2026-09-30 · Button wake and mode change
+
+**Goal:** Wake from Standby with the button, change mode with a short press, switch off with a long press
+**Setup:** devboard, limit switch (NO to PA0, common to GND), 4-LED test string, firmware commit
+**What happened:** PA0 changed to input with pull-up (the switch goes to GND). Three placeholder modes: steady, breathe, dim. Short press = next mode, hold 1.5 s = off (Standby), press = wake in the same mode. Tried on the board and it works as expected. Host tests for the button and modes pass.
+**Next:** Measure Standby current with the ST-Link unplugged. Later: handle a button that is stuck pressed (DD-010).
+
 ```

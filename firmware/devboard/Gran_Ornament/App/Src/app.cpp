@@ -1,6 +1,10 @@
 #include "app.hpp"
 
+#include "auto_off.hpp"
+#include "button.hpp"
 #include "main.h"
+#include "modes.hpp"
+#include "power.hpp"
 #include "pwm.hpp"
 #include "tim.h"
 
@@ -51,28 +55,53 @@ void start_pwm()
     }
 }
 
+bool button_down()
+{
+    return HAL_GPIO_ReadPin(BTN_GPIO_Port, BTN_Pin) == GPIO_PIN_RESET; // to GND, pull-up
+}
+
+[[noreturn]] void switch_off(gran::Button& button)
+{
+    set_all(0U);
+    // Standby wakes on the falling edge, so let go of the button first.
+    while (button.pressed()) {
+        button.update(HAL_GetTick(), button_down());
+    }
+    gran::power::enter_standby();
+}
+
 } // namespace
 
 extern "C" void app_run(void)
 {
+    gran::power::init();
     start_pwm();
 
-    // Bench test: move the LED string between pins, every channel should
-    // show off / dim / medium / full, then a slow fade.
-    constexpr std::array<std::uint32_t, 4> steps{0U, 250U, 500U, 1000U};
+    gran::Mode mode = gran::decode_mode(gran::power::read_backup());
+    gran::Button button(button_down());
+    gran::AutoOff auto_off;
+    auto_off.start(HAL_GetTick());
 
     while (true) {
-        for (const auto level : steps) {
-            set_all(level);
-            HAL_Delay(2000);
+        const std::uint32_t now = HAL_GetTick();
+
+        switch (button.update(now, button_down())) {
+        case gran::ButtonEvent::Short:
+            mode = gran::next(mode);
+            gran::power::write_backup(gran::encode_mode(mode));
+            auto_off.start(now); // any press restarts the 4 h timer
+            break;
+        case gran::ButtonEvent::Long:
+            switch_off(button);
+        case gran::ButtonEvent::None:
+            break;
         }
-        for (std::uint32_t level = 0U; level <= 1000U; ++level) {
-            set_all(level);
-            HAL_Delay(3);
+
+        if (auto_off.expired(now)) {
+            switch_off(button);
         }
-        for (std::uint32_t level = 1000U; level > 0U; --level) {
-            set_all(level);
-            HAL_Delay(3);
-        }
+
+        set_all(gran::mode_level(mode, now));
+        HAL_Delay(1);
     }
 }
