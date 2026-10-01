@@ -23,11 +23,11 @@ struct PwmChannel {
 constexpr std::array<PwmChannel, 7> channels{{
     {&htim1, TIM_CHANNEL_4, false},  // F1 PA11
     {&htim1, TIM_CHANNEL_3, false},  // F2 PB6
-    {&htim1, TIM_CHANNEL_2, true},   // F3 PB0 (CH2N)
-    {&htim16, TIM_CHANNEL_1, false}, // B1 PB8
+    {&htim16, TIM_CHANNEL_1, false}, // F3 PB8
+    {&htim14, TIM_CHANNEL_1, false}, // B1 PA4
     {&htim3, TIM_CHANNEL_1, false},  // B2 PA6
     {&htim3, TIM_CHANNEL_2, false},  // B3 PA7
-    {&htim14, TIM_CHANNEL_1, false}, // star PA4
+    {&htim1, TIM_CHANNEL_2, true},   // star PB0 (CH2N)
 }};
 
 void set_level(const PwmChannel& ch, std::uint32_t permille)

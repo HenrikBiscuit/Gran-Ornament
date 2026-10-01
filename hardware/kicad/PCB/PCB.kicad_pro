@@ -709,7 +709,7 @@
         "uuid": "504f0e67-98c9-4705-999f-7fee580f9f10"
       }
     ],
-    "used_designators": "D1-5,#PWR1-10,BT1,U1-4,R1-6,J1-3,C1-3,SW1,KEY1",
+    "used_designators": "BT1,#PWR1-12,D1-22,U1-5,J1-3,R1-28,C1-6,SW1,KEY1",
     "variants": []
   },
   "sheets": [

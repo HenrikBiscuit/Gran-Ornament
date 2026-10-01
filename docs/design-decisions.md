@@ -28,10 +28,10 @@
 **Revisit if:** A pattern really needs independent stars.
 
 ### DD-005 · LED pins and timers
-**Date:** 2026-09-29
-**Decision:** F1 PA11 (TIM1_CH4), F2 PB6 (TIM1_CH3), F3 PB0 (TIM1_CH2N), B1 PB8 (TIM16_CH1), B2 PA6 (TIM3_CH1), B3 PA7 (TIM3_CH2), star PA4 (TIM14_CH1). All alternate function open drain, no pull, polarity Low (duty = on-time).
-**Why:** The combination CubeMX accepts on separate pads. The 4-LED bottom rows (PA11, PB8) are on the stronger FT_f pins.
-**Watch out:** PB0 is a complementary output. It's started with HAL_TIMEx_PWMN_Start, and its polarity is set by OCNPolarity, not OCPolarity. It must be `TIM_OCNPOLARITY_LOW` (CubeMX: TIM1 → CH2N Polarity), otherwise F3 runs inverted. It was High at first and was fixed on 2026-10-01. TIM17 and PB9 are unused. No LSE crystal is possible, because PB9 shares pad 2 with PC14.
+**Date:** 2026-09-29, pins reassigned 2026-10-01
+**Decision:** F1 PA11 (TIM1_CH4), F2 PB6 (TIM1_CH3), F3 PB8 (TIM16_CH1), B1 PA4 (TIM14_CH1), B2 PA6 (TIM3_CH1), B3 PA7 (TIM3_CH2), star PB0 (TIM1_CH2N). Front is side 2 and back is side 1 in the schematic. All alternate function open drain, no pull, polarity Low (duty = on-time).
+**Why:** The combination CubeMX accepts on separate pads. On 2026-10-01 the schematic moved the star to PB0, B1 to PA4 and F3 to PB8, and the firmware channel table followed.
+**Watch out:** PB0 is a complementary output. It's started with HAL_TIMEx_PWMN_Start, and its polarity is set by OCNPolarity, not OCPolarity. It must be `TIM_OCNPOLARITY_LOW` (CubeMX: TIM1 → CH2N Polarity), otherwise the star runs inverted. B1 (4 LEDs, ~10 mA) is now on PA4, an FT_a pin, which has a higher output-low voltage than FT_f, so B1 may look slightly dimmer than F1. Check it on the first PCB. It was High at first and was fixed on 2026-10-01. TIM17 and PB9 are unused. No LSE crystal is possible, because PB9 shares pad 2 with PC14.
 **Revisit if:** The PCB layout wants a different pin order.
 
 ### DD-006 · Pin safety for LED pads
