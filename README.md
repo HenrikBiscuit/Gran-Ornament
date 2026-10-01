@@ -42,7 +42,7 @@ Full design rationale: [`docs/design-decisions.md`](docs/design-decisions.md)
 
 - [x] Initial KiCad schematic
 - [ ] Dev board bring-up: blink, PWM fade, button wake, Stop/Standby current
-- [ ] First light patterns on the dev board
+- [x] First light patterns on the dev board
 - [ ] Battery measurement via VREFINT
 - [ ] Schematic review and PCB layout (rev A)
 - [ ] First prototype boards
