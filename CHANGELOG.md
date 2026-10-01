@@ -7,6 +7,7 @@ Hardware and firmware are versioned separately.
 - Initial KiCad schematic: STM32G030F6P6, MCP73831 charger, 20 warm-white LEDs in two groups, side-push button.
 - LED layout changed to 3 rows per side plus a shared star, 7 PWM channels (DD-004, DD-005).
 - Global labels for the 7 LED timer channels and PROG_PWR.
+- LED pins reassigned: star on PB0 (TIM1_CH2N), back bottom row on PA4 (TIM14_CH1), front top row on PB8 (TIM16_CH1) (DD-005).
 ### Firmware
 - Dev board bring-up started.
 - PWM on all 7 LED channels (TIM1, TIM3, TIM14, TIM16), open drain, 12 bit at ~3.9 kHz.
@@ -19,6 +20,7 @@ Hardware and firmware are versioned separately.
 - Four modes replace the placeholders: high, low, breathe (now 16 s per breath, 8 s up and 8 s down) and candle.
 - Candle mode: every channel flickers as its own flame, generated from Perlin-style noise (`candle.hpp`), with host tests.
 - Fixed: F3 (PB0, TIM1_CH2N) ran inverted because its CH2N polarity was High. It is now Low (DD-005).
+- Channel table follows the new LED pins: star on PB0, B1 on PA4, F3 on PB8.
 ### Tooling
 - Lint with `clang-format` and `clang-tidy` (`tools/lint.ps1`). It runs in the pre-push gate and as a `lint` CI job, and covers `App/` and host test code only.
 ### Docs
