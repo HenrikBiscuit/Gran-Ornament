@@ -31,7 +31,7 @@
 **Date:** 2026-09-29
 **Decision:** F1 PA11 (TIM1_CH4), F2 PB6 (TIM1_CH3), F3 PB0 (TIM1_CH2N), B1 PB8 (TIM16_CH1), B2 PA6 (TIM3_CH1), B3 PA7 (TIM3_CH2), star PA4 (TIM14_CH1). All alternate function open drain, no pull, polarity Low (duty = on-time).
 **Why:** The combination CubeMX accepts on separate pads. The 4-LED bottom rows (PA11, PB8) are on the stronger FT_f pins.
-**Watch out:** PB0 is a complementary output. It's started with HAL_TIMEx_PWMN_Start, and with only CH2N enabled its polarity is also Low (verified on the bench). TIM17 and PB9 are unused. No LSE crystal is possible, because PB9 shares pad 2 with PC14.
+**Watch out:** PB0 is a complementary output. It's started with HAL_TIMEx_PWMN_Start, and its polarity is set by OCNPolarity, not OCPolarity. It must be `TIM_OCNPOLARITY_LOW` (CubeMX: TIM1 → CH2N Polarity), otherwise F3 runs inverted. It was High at first and was fixed on 2026-10-01. TIM17 and PB9 are unused. No LSE crystal is possible, because PB9 shares pad 2 with PC14.
 **Revisit if:** The PCB layout wants a different pin order.
 
 ### DD-006 · Pin safety for LED pads

@@ -41,3 +41,8 @@ add_executable(modes_test modes_test.cpp)
 target_include_directories(modes_test PRIVATE ${APP_INC})
 target_link_libraries(modes_test PRIVATE GTest::gtest_main)
 gtest_discover_tests(modes_test)
+
+add_executable(candle_test candle_test.cpp)
+target_include_directories(candle_test PRIVATE ${APP_INC})
+target_link_libraries(candle_test PRIVATE GTest::gtest_main)
+gtest_discover_tests(candle_test)
