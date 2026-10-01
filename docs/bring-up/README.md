@@ -49,4 +49,12 @@
 **What happened:** PA0 changed to input with pull-up (the switch goes to GND). Three placeholder modes: steady, breathe, dim. Short press = next mode, hold 1.5 s = off (Standby), press = wake in the same mode. Tried on the board and it works as expected. Host tests for the button and modes pass.
 **Next:** Measure Standby current with the ST-Link unplugged. Later: handle a button that is stuck pressed (DD-010).
 
+
+# 2026-10-01 · Light modes and F3 polarity
+
+**Goal:** Replace the placeholder modes with real ones
+**Setup:** devboard, limit switch on PA0, 4-LED test string, firmware commit
+**What happened:** Four modes: high, low, breathe (16 s per breath) and candle (every channel flickers as its own flame). F3 (PB0, TIM1_CH2N) had CH2N Polarity High in CubeMX. Changed it to Low, and after some troubleshooting F3 now works like the other channels. Host tests for the modes and the candle pass.
+**Next:** Measure Standby current with the ST-Link unplugged.
+
 ```

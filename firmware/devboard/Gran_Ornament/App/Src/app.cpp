@@ -23,7 +23,7 @@ struct PwmChannel {
 constexpr std::array<PwmChannel, 7> channels{{
     {&htim1, TIM_CHANNEL_4, false},  // F1 PA11
     {&htim1, TIM_CHANNEL_3, false},  // F2 PB6
-    {&htim1, TIM_CHANNEL_2, true},   // F3 PB0
+    {&htim1, TIM_CHANNEL_2, true},   // F3 PB0 (CH2N)
     {&htim16, TIM_CHANNEL_1, false}, // B1 PB8
     {&htim3, TIM_CHANNEL_1, false},  // B2 PA6
     {&htim3, TIM_CHANNEL_2, false},  // B3 PA7
@@ -101,7 +101,11 @@ extern "C" void app_run(void)
             switch_off(button);
         }
 
-        set_all(gran::mode_level(mode, now));
+        std::uint32_t index = 0U;
+        for (const auto& ch : channels) {
+            set_level(ch, gran::mode_level(mode, now, index));
+            ++index;
+        }
         HAL_Delay(1);
     }
 }
