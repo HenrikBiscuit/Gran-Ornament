@@ -728,12 +728,36 @@
           "label": "Datasheet",
           "name": "Datasheet",
           "show": true
+        },
+        {
+          "group_by": false,
+          "label": "Description",
+          "name": "Description",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Sim.Pins",
+          "name": "Sim.Pins",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "#",
+          "name": "${ITEM_NUMBER}",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "LCSC",
+          "name": "LCSC",
+          "show": false
         }
       ],
       "filter_string": "",
       "group_symbols": true,
       "include_excluded_from_bom": true,
-      "name": "Default Editing",
+      "name": "",
       "sort_asc": true,
       "sort_field": "Reference"
     },
@@ -778,7 +802,7 @@
         "uuid": "504f0e67-98c9-4705-999f-7fee580f9f10"
       }
     ],
-    "used_designators": "BT1,#PWR1-14,D1-22,U1-6,J1-3,#FLG1-5,R1-28,C1-7,SW1,KEY1",
+    "used_designators": "BT1,#PWR1-14,D1-22,U1-6,J1-3,#FLG1-5,R1-28,C1-8,SW1,KEY1",
     "variants": []
   },
   "sheets": [
