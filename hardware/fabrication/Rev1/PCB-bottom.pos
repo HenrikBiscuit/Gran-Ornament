@@ -1,0 +1,26 @@
+### Footprint positions - created on 2026-10-03T12:22:16 ###
+### Printed by KiCad version 10.0.6
+## Unit = mm, Angle = deg.
+## Side : bottom
+# Ref     Val       Package                 PosX       PosY       Rot  Side
+D13       LED       D_0603_1608Metric   109.2000  -111.0000    0.0000  bottom
+D14       LED       D_0603_1608Metric   122.4000  -111.0000    0.0000  bottom
+D15       LED       D_0603_1608Metric   135.6000  -111.0000    0.0000  bottom
+D16       LED       D_0603_1608Metric   148.8000  -111.0000    0.0000  bottom
+D17       LED       D_0603_1608Metric   115.8000   -98.9000    0.0000  bottom
+D18       LED       D_0603_1608Metric   129.0000   -98.9000    0.0000  bottom
+D19       LED       D_0603_1608Metric   142.2000   -98.9000    0.0000  bottom
+D20       LED       D_0603_1608Metric   122.4000   -86.8000    0.0000  bottom
+D21       LED       D_0603_1608Metric   135.6000   -86.8000    0.0000  bottom
+D22       LED       D_0603_1608Metric   129.0000   -74.7000    0.0000  bottom
+R17       470       R_0603_1608Metric   112.2000  -111.0000  180.0000  bottom
+R18       470       R_0603_1608Metric   125.4000  -111.0000  180.0000  bottom
+R19       470       R_0603_1608Metric   138.6000  -111.0000  180.0000  bottom
+R20       470       R_0603_1608Metric   151.8000  -111.0000  180.0000  bottom
+R21       470       R_0603_1608Metric   118.8000   -98.9000  180.0000  bottom
+R22       470       R_0603_1608Metric   132.0000   -98.9000  180.0000  bottom
+R23       470       R_0603_1608Metric   145.2000   -98.9000  180.0000  bottom
+R24       470       R_0603_1608Metric   125.4000   -86.8000  180.0000  bottom
+R25       470       R_0603_1608Metric   138.6000   -86.8000  180.0000  bottom
+R26       470       R_0603_1608Metric   132.0000   -74.7000  180.0000  bottom
+## End
