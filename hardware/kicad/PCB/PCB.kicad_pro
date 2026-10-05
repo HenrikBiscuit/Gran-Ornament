@@ -641,7 +641,7 @@
     "last_paths": {
       "idf": "",
       "netlist": "",
-      "plot": "",
+      "plot": "../../fabrication/Rev1/",
       "specctra_dsn": "",
       "step": "",
       "vrml": ""
@@ -751,7 +751,7 @@
           "group_by": false,
           "label": "LCSC",
           "name": "LCSC",
-          "show": false
+          "show": true
         }
       ],
       "filter_string": "",
