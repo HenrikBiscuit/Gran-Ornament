@@ -7,4 +7,4 @@
 | [`pinout.md`](pinout.md) | MCU pin assignment, shared by schematic and firmware |
 | [`bring-up/`](bring-up/) | Dated lab notes from the bench |
 | `images/` | Photos and screenshots (resize to ~1600 px wide before committing) |
-| `schematic-revX.pdf` | Schematic export for people without KiCad |
+| `schematic-revX.pdf` | Schematic export for people without KiCad (not exported yet) |

@@ -1,7 +1,5 @@
 # Design decisions
 
-# Design decisions
-
 ### DD-001 · MCU: STM32G030F6P6
 **Date:** 2026-09
 **Decision:** STM32G030F6P6 in TSSOP-20.
@@ -11,7 +9,7 @@
 
 ### DD-002 · Battery
 **Date:** – 2026-09
-**Decision:** *TBD — capacity, cell size, protection circuit on cell or on board.*
+**Decision:** Single-cell LiPo, 250 mAh planned. Protection is on the board (DW01A + FS8205A). Charged at 100 mA by the MCP73831 (10k on PROG), about 0.4 C. Firmware cutoff at 3.6 V (DD-011). *Cell size and supplier TBD.*
 
 ### DD-003 · LED drive: per-LED resistor, MCU pin sinks
 **Date:** 2026-09
@@ -45,12 +43,15 @@
 **Date:** 2026-09-29
 **Decision:** SYSCLK 16 MHz from HSI, no PLL. All LED timers at prescaler 0, period 4095: 12 bit at ~3.9 kHz.
 **Why:** Lower run current than 64 MHz, which matters next to ~10 mA of LED current. 3.9 kHz is high enough to avoid camera flicker.
-**Watch out:** Battery compensation uses about half the range at full battery, so the dimmest fades have fewer steps.
+**Watch out:** Battery compensation (DD-011) uses only ~49 % of the range at full battery, so the dimmest fades have fewer steps.
 **Revisit if:** A slow fade near off shows visible steps. Then add dithering or go to 32 MHz for 13 bit.
 
 ### DD-008 · LED series resistor
-**Date:** – 2026-09
-**Decision:** *TBD — 470 Ω or 680 Ω. 470 Ω is electrically safe; choose by look at the compensation floor (~60 % duty at full battery).*
+**Date:** 2026-10
+**Decision:** 470 Ω, in the Rev 1 BOM.
+**Why:** Electrically safe (~2.3 mA per LED at 4.1 V, measured), and more light than 680 Ω. The compensation makes every mode look as bright as at 3.6 V, so the extra headroom matters.
+**Watch out:** Compensation runs at ~49 % duty at full battery (DD-011), so the dimmest fades have fewer steps (DD-007).
+**Revisit if:** The ornament looks too bright, or the dim end of the fades shows steps.
 
 ### DD-009 · Button: one press to wake, short to change mode, long to switch off
 **Date:** 2026-09-29
@@ -61,7 +62,14 @@
 
 ### DD-010 · Off means Standby, mode kept in a backup register
 **Date:** 2026-09-29
-**Decision:** Switching off (long press or the 4 h auto-off) turns the LEDs off, waits for the button to be released, and enters Standby. PA0 is WKUP1 and wakes the MCU on a falling edge. The PWR pull-up keeps PA0 high in Standby. Waking is a reset, and the current mode is read back from TAMP backup register 0 (`0x4752'0000 | mode`, anything else means the default mode).
+**Decision:** Switching on fades in over 1 s. Switching off (long press, the 4 h auto-off or a low battery) fades out over 1 s, waits for the button to be released, and enters Standby. PA0 is WKUP1 and wakes the MCU on a falling edge. The PWR pull-up keeps PA0 high in Standby. Waking is a reset, and the current mode is read back from TAMP backup register 0 (`0x4752'0000 | mode`, anything else means the default mode).
 **Why:** Standby is the lowest-current mode on the G030 (sub-µA, to be measured). Every other GPIO goes Hi-Z, so the open-drain LED pins are released and the LEDs stay off with no pull-down on the pads (DD-006). The backup register survives Standby and NRST, so the ornament comes back in the same mode.
 **Watch out:** The debugger drops when the MCU enters Standby: press the button (or connect under reset) to flash again. The mode is lost when the battery is disconnected. If the button is stuck pressed (e.g. squeezed in the box), the ornament wakes, stays on for 4 h, then waits forever for the release with the CPU running. Not handled yet.
 **Revisit if:** Measured Standby current is higher than the power budget allows, or the ornament must stay off after the battery is first connected.
+
+### DD-011 · Battery measurement and brightness compensation
+**Date:** 2026-10-06
+**Decision:** VBAT is measured on PA1 (ADC1_IN1, `VBAT_SENSE`) through a 1M/1M divider with 0.1 µF on the ADC side. Sampling time 160.5 cycles, calibrated at boot, read once a second. Every LED level is multiplied by a brightness scale so the LEDs look as bright at any battery voltage as at 3.6 V: scale = (3.6 V − 3.03 V) / (VBAT − 3.03 V), capped at 100 %. 3.03 V is the measured LED VF (2.70 V) plus the pin's low voltage (0.33 V). That gives ~49 % at 4.2 V, ~66 % at 3.9 V and 100 % at 3.6 V and below. Below 3.6 V for 5 readings in a row (~5 s), the ornament fades out, pulses three times to say "charge me" (`fade.hpp`) and switches off (`LowBattery`), leaving roughly 10–20 % of the cell for storage. Code: `battery.hpp` (HAL-free, host-tested) and `battery.cpp` (ADC).
+**Why:** LED current follows the voltage left across the series resistor, so without compensation a full battery is roughly twice as bright as one at 3.6 V. The divider draws ~2 µA all the time. The cap supplies the charge the ADC takes when sampling, which a 1M divider alone can't.
+**Watch out:** The ADC reads relative to VDD (3.3 V LDO). Below ~3.4 V VBAT the LDO drops out, VDD falls with the battery and the reading stops tracking it. That doesn't change the brightness (the scale is already 100 % there), and the 3.6 V cutoff sits above it, so neither needs VREFINT. Powered from the programmer with no battery (VBAT about 3.0 V through the Schottky, or 0 V if it feeds the 3.3 V rail), the board reads as a flat battery and switches off after ~5 s. Below 3.6 V the LEDs dim with the battery. The 3.03 V drop comes from a single LED measurement. Readings lag a voltage change by ~0.25 s (divider and cap). Each board needs a calibration factor (`kVbatCalPermille`): the hand-wired dev board read 3.5 % low (0.8 % from VDD = 3.326 V, the rest from the divider), found by where the cutoff trips in Low mode. Measure trip points in a dim mode: in High, ~30 mV is lost in the bench leads. A multimeter on PA1 loads the 500 kΩ divider output by ~5 % and can trip the cutoff.
+**Revisit if:** The first PCB measures a different VF, the LEDs look too dim overall (raise the 3.6 V point), or a year in storage leaves the cell too low (raise the cutoff towards 3.8 V).
