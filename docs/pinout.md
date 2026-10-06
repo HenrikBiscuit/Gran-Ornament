@@ -9,7 +9,7 @@
 | 5 | VSS/VSSA | Ground | GND | |
 | 6 | PF2-NRST | Reset | NRST | Test pad for pogo jig |
 | 7 | PA0 | GPIO input, pull-up | BUTTON | WKUP1: wakes from Standby on a falling edge, pull-up kept in Standby (DD-010). Side-push button to GND (limit switch on devboard) |
-| 8 | PA1 | ADC1_IN1 | VBAT_SENSE | Planned: VBAT divider |
+| 8 | PA1 | ADC1_IN1, analog | VBAT_SENSE | VBAT through a 1M/1M divider, 0.1 µF to GND. Read once a second (DD-011) |
 | 9 | PA2 | – | – | Free. Candidate for charger STAT |
 | 10 | PA3 | – | – | Free |
 | 11 | PA4 | TIM14_CH1, AF open drain | LED_B1 | Back bottom row, 4 LEDs. FT_a |

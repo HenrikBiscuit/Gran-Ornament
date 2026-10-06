@@ -46,3 +46,13 @@ add_executable(candle_test candle_test.cpp)
 target_include_directories(candle_test PRIVATE ${APP_INC})
 target_link_libraries(candle_test PRIVATE GTest::gtest_main)
 gtest_discover_tests(candle_test)
+
+add_executable(battery_test battery_test.cpp)
+target_include_directories(battery_test PRIVATE ${APP_INC})
+target_link_libraries(battery_test PRIVATE GTest::gtest_main)
+gtest_discover_tests(battery_test)
+
+add_executable(fade_test fade_test.cpp)
+target_include_directories(fade_test PRIVATE ${APP_INC})
+target_link_libraries(fade_test PRIVATE GTest::gtest_main)
+gtest_discover_tests(fade_test)

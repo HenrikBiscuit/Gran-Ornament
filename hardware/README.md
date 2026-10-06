@@ -13,9 +13,9 @@
 
 | Rev | Date | Status | Notes |
 |---|---|---|---|
-| A | – | Schematic in progress | First design |
+| Rev 1 | 2026-10 | First batch ordered ([`fabrication/Rev1/`](fabrication/Rev1/)) | First design. JLCPCB assembly |
 
-Each revision that is sent to fabrication gets a Git tag (`hw-vA`, `hw-vB`, ...) and a
+Each revision that is sent to fabrication gets a Git tag (`hw-v1`, `hw-v2`, ...) and a
 GitHub Release with the fabrication zip attached, so it is always possible to see exactly
 what was built.
 

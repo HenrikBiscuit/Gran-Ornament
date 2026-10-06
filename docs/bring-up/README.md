@@ -1,4 +1,8 @@
-# 2026-09-24 · First blink
+# Bring-up log
+
+Dated lab notes from the bench, newest at the bottom.
+
+## 2026-09-24 · First blink
 
 **Goal:** Program the board and blink LEDs
 
@@ -8,7 +12,7 @@
 
 **Next:** Setting up git, then getting to it
 
-# 2026-09-25 · First blink
+## 2026-09-25 · First blink
 
 **Goal:** Program the board and blink LEDs
 
@@ -18,7 +22,7 @@
 
 **Next:** Implementing CI and Googletest
 
-# 2026-09-25 · CI and Googletest
+## 2026-09-25 · CI and Googletest
 
 **Goal:** Have Github actions build project on multiple platforms and report any failures 
 
@@ -28,7 +32,7 @@
 
 **Next:** Implementing PWM
 
-# 2026-09-28 · PWM implementation
+## 2026-09-28 · PWM implementation
 
 **Goal:** Have a dimable LED from A PWM signal
 
@@ -38,7 +42,7 @@
 
 **Next:** Write useable function and setup tests for it
 
-# 2026-09-29 · LED current and pin checks
+## 2026-09-29 · LED current and pin checks
 
 **Goal:** Measure the real LED current on one band, and check that a released pin doesn't leak current through the LEDs
 
@@ -48,7 +52,7 @@
 
 **Next:** Drive every band pin from its own timer
 
-# 2026-09-29 · All PWM channels
+## 2026-09-29 · All PWM channels
 
 **Goal:** Drive every LED band from its own timer channel
 
@@ -58,7 +62,7 @@
 
 **Next:** Button on PA0 (limit switch wired, NO)
 
-# 2026-09-30 · Button wake and mode change
+## 2026-09-30 · Button wake and mode change
 
 **Goal:** Wake from Standby with the button, change mode with a short press, switch off with a long press
 
@@ -68,7 +72,7 @@
 
 **Next:** Measure Standby current with the ST-Link unplugged. Later: handle a button that is stuck pressed (DD-010).
 
-# 2026-10-01 · Light modes and F3 polarity
+## 2026-10-01 · Light modes and F3 polarity
 
 **Goal:** Replace the placeholder modes with real ones
 
@@ -78,16 +82,9 @@
 
 **Next:** Measure Standby current with the ST-Link unplugged.
 
-# 2026-10-05 · LED current vs. battery voltage
+## 2026-10-06 · Battery measurement and cutoff
 
-**Goal:** Measure how LED current falls with battery voltage, to set the brightness compensation and help choose the series resistor (DD-008)
-
-**Setup:** devboard on a bench PSU instead of the LiPo, MCP1700 LDO, 10 LEDs wired as on the ornament (rows of 4, 3, 2 and 1 star LED, 470 Ω each), band pins held low (no PWM), ST-Link 3.3 V wire removed, PSU resolution 1 mA, 22 °C. Tables: [2026-10-05-led-current-sweep.md](2026-10-05-led-current-sweep.md), raw data: [2026-10-05-led-current-sweep.csv](2026-10-05-led-current-sweep.csv)
-
-**What happened:** Stepped 4.2 V → 3.0 V in 0.1 V steps for six setups (all rows off, each row alone, all on). Baseline was 1 mA at every step. An all-LEDs re-check at 4.2 V at the end of the test read 26 mA, the same as at the start, so nothing drifted. With all rows on, the LED current is a straight line: I = (VBAT − 2.55 V) / 672 Ω, from 2.45 mA per LED at 4.2 V down to 0.67 mA at 3.0 V. No point is more than ~0.05 mA off the line. It agrees with the 2026-09-29 single-string test (2.34 mA at 4.13 V; the fit gives 2.35 mA). The ~200 Ω on top of the 470 Ω comes from the LED and the pin's output resistance (~35 Ω, shared by every LED on the pin). The star pin carries only one LED, so it should be ~15–20 % brighter than the 4-LED row. The per-row readings point that way, but at 1 mA resolution they are too coarse to confirm it. The 4-LED row draws ~9 mA and all ten LEDs ~25 mA at 4.2 V, well inside the pin limits. There's no knee above 3.0 V. Row 3 and the star read 1 mA high at 3.3 V; the all-on reading there is on the line, so this was probably a misread.
-
-**Result:** Compensation uses V0 = 2.55 V, not a datasheet VF: duty = (3.5 − 2.55) / (VBAT − 2.55), capped at 100 %, which is ~58 % at 4.2 V. The full-to-floor ratio depends only on V0, so the resistor value does not change it. 680 Ω only makes everything dimmer (~1.9 mA per LED at 4.2 V, estimated) and saves battery (~19 mA instead of ~25 mA with all ten LEDs on).
-
-**Watch out:** The MCP1700 drops out around 3.3–3.4 V, after which VDD follows the battery. A VBAT reading that uses VDD as the ADC reference will drift right where compensation matters most.
-
-**Next:** Decide DD-008 by brightness and battery life, then implement the compensation.
+**Goal:** Read the battery voltage, keep brightness constant as it drains, and switch off before the cell runs flat
+**Setup:** devboard, 1M/1M divider with 0.1 µF on PA1 (taped and heatshrunk, not probeable), bench supply on VBAT, multimeter, firmware commit
+**What happened:** ADC1_IN1 at 160.5 cycles, calibrated at boot. A blink-rate test (faster at higher VBAT) showed the reading follows the supply. Brightness compensation holds every mode at its 3.6 V brightness, and the cutoff fades out, pulses three times and goes to Standby. Uncalibrated, the 3.6 V cutoff tripped at 3.76 V in High and 3.73 V in Low: ~30 mV is lost in the bench leads under load, ~0.8 % comes from VDD (3.326 V), the rest from the divider. A multimeter on PA1 (500 kΩ source) pulled it down ~5 % and tripped the cutoff while measuring. With a +3.5 % calibration the cutoff trips at 3.63 V in High and 3.61 V in Low.
+**Next:** Check the divider and calibration on the first PCB (1 % resistors). Measure Standby current with the divider in place.

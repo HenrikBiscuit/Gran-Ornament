@@ -1,7 +1,7 @@
 # Firmware
 
 Target: **STM32G030F6P6** (Cortex-M0+, 32 KB flash, 8 KB RAM).
-Toolchain: VS code (GCC). HAL/LL mix, kept small and readable.
+Toolchain: VS Code with the STM32Cube extension (CMake, GCC). CubeMX HAL, kept small and readable.
 
 ## Layout
 
@@ -10,6 +10,24 @@ Toolchain: VS code (GCC). HAL/LL mix, kept small and readable.
 | `devboard/` | VS code project for the dev board. Experiments, bring-up tests, pattern tuning. |
 | `ornament/` | VS Code project for the real ornament board (created once rev A exists). |
 | `tests/` | Host-side GoogleTest tests for the hardware-independent code in `devboard/Gran_Ornament/App/Inc`. |
+
+## Application code (`devboard/Gran_Ornament/App`)
+
+CubeMX owns `Core/`. Our code lives in `App/` and starts at `app_run()`, called from `main.c`.
+Logic that doesn't touch the hardware is kept in headers without HAL, so it can be tested on a PC.
+
+| File | What it does | Host-tested |
+|---|---|---|
+| `app.cpp` | Main loop: button, modes, fades, battery, switch-off. Sleeps (`__WFI`) between 1 ms ticks | – |
+| `modes.hpp` | The light modes (high, low, breathe, candle) and how the mode is stored | yes |
+| `candle.hpp` | Candle flicker from Perlin-style noise | yes |
+| `fade.hpp` | Fade in/out and the "charge me" pulses | yes |
+| `battery.hpp` | Battery voltage, brightness compensation, low-battery cutoff (DD-011) | yes |
+| `battery.cpp` | ADC reading of `VBAT_SENSE` | – |
+| `button.hpp` | Debounce, short and long press | yes |
+| `auto_off.hpp` | 4 h auto-off timer | yes |
+| `pwm.hpp` | Brightness in permille to timer compare value | yes |
+| `power.hpp`, `power.cpp` | Standby, wake-up and the backup register (DD-010) | – |
 
 ## Checks
 
@@ -25,7 +43,8 @@ Every push is checked the same way locally and in CI
      headers, so it needs the configure step above.
    - CubeMX-generated `Core/` and vendor `Drivers/` are never formatted or linted, so
      regenerating from the `.ioc` stays clean.
-3. **Test**: build and run the host tests with CTest.
+3. **Test**: build and run the host tests with CTest. On Windows the MSYS2 compiler folder
+   (`C:\msys64\ucrt64\bin`) must be on `PATH`, or the test build fails without an error message.
 
 Run all three locally with the pre-push gate:
 
