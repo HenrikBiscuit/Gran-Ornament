@@ -1,7 +1,9 @@
 #include "app.hpp"
 
 #include "auto_off.hpp"
+#include "battery.hpp"
 #include "button.hpp"
+#include "fade.hpp"
 #include "main.h"
 #include "modes.hpp"
 #include "power.hpp"
@@ -77,35 +79,96 @@ extern "C" void app_run(void)
     gran::power::init();
     start_pwm();
 
+    gran::battery::init();
+
     gran::Mode mode = gran::decode_mode(gran::power::read_backup());
     gran::Button button(button_down());
     gran::AutoOff auto_off;
     auto_off.start(HAL_GetTick());
 
+    // The battery changes slowly, so read it once a second, not every loop.
+    constexpr std::uint32_t kBatteryReadMs = 1000U;
+    std::uint32_t scale = gran::brightness_scale(gran::battery::read_mv());
+    std::uint32_t battery_read_at = HAL_GetTick();
+    gran::LowBattery low_battery;
+
+    // On: showing the mode. FadingOut: on the way to Standby, or to the
+    // charge warning if the battery is low. ChargeWarning: pulsing, then off.
+    enum class State : std::uint8_t { On, FadingOut, ChargeWarning };
+    State state = State::On;
+    bool warn_after_fade = false;
+    std::uint32_t warning_start = 0U;
+
+    gran::Fade fade;
+    fade.fade_in(HAL_GetTick());
+
     while (true) {
         const std::uint32_t now = HAL_GetTick();
 
-        switch (button.update(now, button_down())) {
-        case gran::ButtonEvent::Short:
-            mode = gran::next(mode);
-            gran::power::write_backup(gran::encode_mode(mode));
-            auto_off.start(now); // any press restarts the 4 h timer
-            break;
-        case gran::ButtonEvent::Long:
-            switch_off(button);
-        case gran::ButtonEvent::None:
-            break;
+        // Keep updating the button in every state, so switch_off() knows
+        // whether it is still held. Its events only count while on.
+        const gran::ButtonEvent event = button.update(now, button_down());
+
+        if (state == State::On) {
+            switch (event) {
+            case gran::ButtonEvent::Short:
+                mode = gran::next(mode);
+                gran::power::write_backup(gran::encode_mode(mode));
+                auto_off.start(now); // any press restarts the 4 h timer
+                break;
+            case gran::ButtonEvent::Long:
+                fade.fade_out(now);
+                state = State::FadingOut;
+                break;
+            case gran::ButtonEvent::None:
+                break;
+            }
+
+            if (auto_off.expired(now)) {
+                fade.fade_out(now);
+                state = State::FadingOut;
+            }
         }
 
-        if (auto_off.expired(now)) {
+        if (now - battery_read_at >= kBatteryReadMs) {
+            const std::uint32_t vbat_mv = gran::battery::read_mv();
+            scale = gran::brightness_scale(vbat_mv);
+            battery_read_at = now;
+            if (low_battery.update(vbat_mv) && state == State::On) {
+                fade.fade_out(now);
+                state = State::FadingOut;
+                warn_after_fade = true;
+            }
+        }
+
+        if (state == State::FadingOut && fade.done(now)) {
+            if (!warn_after_fade) {
+                switch_off(button);
+            }
+            state = State::ChargeWarning;
+            warning_start = now;
+        }
+        if (state == State::ChargeWarning && now - warning_start >= gran::kChargeWarningMs) {
             switch_off(button);
         }
 
-        std::uint32_t index = 0U;
-        for (const auto& ch : channels) {
-            set_level(ch, gran::mode_level(mode, now, index));
-            ++index;
+        if (state == State::ChargeWarning) {
+            set_all(gran::scale_level(gran::charge_warning_level(now - warning_start), scale));
+        } else {
+            const std::uint32_t fade_level = fade.level(now);
+            std::uint32_t index = 0U;
+            for (const auto& ch : channels) {
+                const std::uint32_t level =
+                    gran::scale_level(gran::mode_level(mode, now, index), scale);
+                set_level(ch, gran::scale_level(level, fade_level));
+                ++index;
+            }
         }
-        HAL_Delay(1);
+
+        // Sleep until the next SysTick (1 ms) instead of busy-waiting. The
+        // timers keep running the PWM while the CPU sleeps.
+        while (HAL_GetTick() == now) {
+            __WFI();
+        }
     }
 }
